@@ -17,3 +17,16 @@ PDF の契約書をアップロードし、自社の署名を入れて相手に�
 - Supabase のテーブルと Storage には anon 向けのポリシーを作らない。DB と Storage はサーバー側の service role キーだけで触る
 - `SUPABASE_SERVICE_ROLE_KEY` はサーバーの環境変数にだけ置き、ブラウザに出さない
 - 管理画面と `/api/contracts`・`/api/upload` は Basic 認証の内側（`src/proxy.ts`）
+
+## ターミナルから契約を見る（CLI）
+
+`.env.local` に `NEXT_PUBLIC_SUPABASE_URL` と `SUPABASE_SERVICE_ROLE_KEY` を入れてから使う。
+
+```bash
+npm run cli -- list [status]      # 契約の一覧（draft / pending / completed など）
+npm run cli -- signed [--since ISO] # 締結済みの契約
+npm run cli -- get <id>           # 1件の詳細
+npm run cli -- stats              # 状態ごとの件数
+```
+
+`--json` を付けると JSON で出る。
