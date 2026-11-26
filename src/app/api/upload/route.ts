@@ -1,8 +1,12 @@
+import { requireAdmin } from '@/lib/admin-auth'
 import { NextResponse } from 'next/server'
 import { createServerClient } from '@/lib/supabase/server'
 import { v4 as uuidv4 } from 'uuid'
 
 export async function POST() {
+  const denied = await requireAdmin()
+  if (denied) return denied
+
   try {
     const supabase = createServerClient()
     const fileId = uuidv4()

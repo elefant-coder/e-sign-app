@@ -3,7 +3,7 @@
 PDF の契約書をアップロードし、自社の署名を入れて相手にメールで署名を依頼し、相手が署名すると締結済み PDF ができるアプリです。
 
 - Next.js 16 / Supabase（DB と Storage）/ Resend（メール）/ pdf-lib（署名の埋め込み）
-- 管理画面は Basic 認証。相手の署名ページは `/sign/[token]`（リンクは30日で切れる）
+- 管理画面は Basic 認証（`BASIC_AUTH_PASSWORD` は必須。未設定だと管理画面と管理 API は止まる）。相手の署名ページは `/sign/[token]`（リンクは30日で切れる）
 
 ## 動かし方
 
@@ -16,7 +16,7 @@ PDF の契約書をアップロードし、自社の署名を入れて相手に�
 
 - Supabase のテーブルと Storage には anon 向けのポリシーを作らない。DB と Storage はサーバー側の service role キーだけで触る
 - `SUPABASE_SERVICE_ROLE_KEY` はサーバーの環境変数にだけ置き、ブラウザに出さない
-- 管理画面と `/api/contracts`・`/api/upload` は Basic 認証の内側（`src/proxy.ts`）
+- 管理画面と `/api/contracts`・`/api/upload` は Basic 認証の内側（`src/proxy.ts` と各 API の先頭の `requireAdmin()` の二重）
 
 ## ターミナルから契約を見る（CLI）
 
@@ -30,3 +30,7 @@ npm run cli -- stats              # 状態ごとの件数
 ```
 
 `--json` を付けると JSON で出る。
+
+## ライセンス
+
+MIT（`LICENSE`）。同梱している第三者の素材は `THIRD_PARTY_NOTICES.md` を参照。

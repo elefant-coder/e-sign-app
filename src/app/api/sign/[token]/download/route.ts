@@ -12,12 +12,20 @@ export async function GET(
     // Fetch the contract by sign_token
     const { data: contract, error: fetchError } = await supabase
       .from('contracts')
-      .select('signed_pdf_path, title, status')
+      .select('signed_pdf_path, title, status, expires_at')
       .eq('sign_token', token)
       .single()
 
     if (fetchError || !contract) {
       return NextResponse.json({ error: '契約が見つかりません' }, { status: 404 })
+    }
+
+    // 署名リンクの有効期限（30日）を過ぎたらダウンロードも止める
+    if (contract.expires_at && new Date(contract.expires_at) < new Date()) {
+      return NextResponse.json(
+        { error: 'このリンクは有効期限が切れています' },
+        { status: 410 }
+      )
     }
 
     if (contract.status !== 'completed') {
